@@ -12,7 +12,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models import table_registry
+from src.models.base import table_registry
 from src.core.settings import settings
 
 if sys.platform == 'win32':
