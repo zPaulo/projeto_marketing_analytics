@@ -5,9 +5,12 @@ description = "Fullstack data project for LTV and Chrun prediction "
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiosqlite>=0.21.0",
     "alembic>=1.16.4",
+    "pandas>=2.3.2",
+    "polars>=1.32.3",
+    "pyarrow>=18.0.0",
     "pydantic-settings>=2.10.1",
-    "pyspark>=4.0.0",
     "sqlalchemy>=2.0.43,<3.0.0",
 ]
 
