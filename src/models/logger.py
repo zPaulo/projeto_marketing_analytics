@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from contextlib import asynccontextmanager
-from src.core.database import DatabaseSession
+from src.core.database import LogsSession
 from src.models.base import LogsPipelinesExecutions, ExecutionPipelineStatus
 from sqlalchemy import select, update
 
@@ -52,7 +52,7 @@ class PipelineLogger:
     
     async def _save_log_status(self, status: ExecutionPipelineStatus, detail: str, duration: float = None, records_processed: int = None):
         """Salva o status atual no banco"""
-        async with DatabaseSession() as session:
+        async with LogsSession() as session:
             current_time = datetime.now()
             
             if hasattr(self.execution_log, 'id') and self.execution_log.id:

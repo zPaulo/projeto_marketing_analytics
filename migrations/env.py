@@ -12,19 +12,19 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models.base import table_registry
+from src.models.base import logs_registry
 from src.core.settings import settings
 
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 config = context.config
-config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
+config.set_main_option('sqlalchemy.url', settings.LOGS_DATABASE_URL)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = table_registry.metadata
+target_metadata = logs_registry.metadata
 
 
 def run_migrations_offline() -> None:
