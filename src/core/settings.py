@@ -5,6 +5,13 @@ class Settings(BaseSettings):
         env_file='.env', env_file_encoding='utf-8'
     )
 
-    DATABASE_URL: str
+    # Bronze - Dados Brutos
+    BRONZE_DATABASE_URL: str
+
+    # Silver - Dados Processados
+    SILVER_DATABASE_URL: str
+
+    # Logs - Dados de Log
+    LOGS_DATABASE_URL: str
 
 settings = Settings()

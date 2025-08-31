@@ -1,17 +1,31 @@
 from datetime import datetime
-from sqlalchemy.orm import registry, mapped_column
+from sqlalchemy.orm import registry, mapped_column, DeclarativeBase
 from enum import Enum
 from typing import Optional
 
-table_registry = registry()
+# Registry separado para cada camada
+bronze_registry = registry()
+silver_registry = registry()
+logs_registry = registry()
 
+class BronzeBase(DeclarativeBase):
+    registry = bronze_registry
+
+class SilverBase(DeclarativeBase):
+    registry = silver_registry
+
+class LogsBase(DeclarativeBase):
+    registry = logs_registry
+
+# Enums para logs
 class ExecutionPipelineStatus(str, Enum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
 
-@table_registry.mapped_as_dataclass
+# modelos de logs
+@logs_registry.mapped_as_dataclass
 class LogsPipelinesExecutions:
     __tablename__ = "logs_pipelines_executions"
     id: int = mapped_column(init=False, primary_key=True)
