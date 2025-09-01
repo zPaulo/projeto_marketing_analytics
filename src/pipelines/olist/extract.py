@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict
 
 class OlistExtractor:
-    def __inti__(self, data_path: str = "src/data/Olist_customers"):
+    def __init__(self, data_path: str = "src/data/Olist_customers"):
         self.data_path = Path(data_path)
 
     async def extract_customers(self) -> pl.DataFrame:
@@ -34,9 +34,16 @@ class OlistExtractor:
             null_values=["", "NA", "NULL"]
         )
     
+    async def extract_orders(self) -> pl.DataFrame:
+        return pl.read_csv(
+            self.data_path / "olist_orders_dataset.csv",
+            try_parse_dates=True,
+            null_values=["", "NA", "NULL"]
+        )
+    
     async def extract_reviews(self) -> pl.DataFrame:
         return pl.read_csv(
-            self.data_path / "olist_reviews_dataset.csv",
+            self.data_path / "olist_order_reviews_dataset.csv",
             try_parse_dates=True,
             null_values=["", "NA", "NULL"]
         )
@@ -57,7 +64,7 @@ class OlistExtractor:
     
     async def extract_category_name_translation(self) -> pl.DataFrame:
         return pl.read_csv(
-            self.data_path / "olist_category_name_translation.csv",
+            self.data_path / "product_category_name_translation.csv",
             try_parse_dates=True,
             null_values=["", "NA", "NULL"]
         )
@@ -66,6 +73,7 @@ class OlistExtractor:
         return {
             "customers": await self.extract_customers(),
             "geolocation": await self.extract_geolocation(),
+            "orders": await self.extract_orders(),
             "order_items": await self.extract_order_items(),
             "order_payments": await self.extract_order_payments(),
             "reviews": await self.extract_reviews(),
