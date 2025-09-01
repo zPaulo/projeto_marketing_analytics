@@ -1,5 +1,5 @@
 import time
-from src.core.database import DatabaseSession
+from src.core.database import BronzeSession, SilverSession, LogsSession
 from .extract import TelcoExtractor
 from .load import TelcoLoader
 from .transform import TelcoTransformer
@@ -26,16 +26,17 @@ class TelcoPipeline:
 
             # Load
             start_time = time.time()
-            async with DatabaseSession() as session:
-                await self.loader.load_raw_customer_churn(session, raw_data['customer_churn'])
+            async with BronzeSession() as session:
+                for table_name, df in raw_data.items():
+                    await self.loader.load_raw_telco(session, df, f"bronze_telco_{table_name}")
+
             load_duration = time.time() - start_time
-            
             await logger.log_step("load", load_duration, records_count)
 
             # Transform
             start_time = time.time()
-            async with DatabaseSession() as session:
-                await self.transformer.create_clean_customer_table(session)
+            async with SilverSession() as session:
+                await self.transformer.create_clean_customer_churn(session)
             transform_duration = time.time() - start_time
-            
+
             await logger.log_step("transform", transform_duration)
