@@ -1,60 +1,44 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 from .settings import settings
-from src.models.base import bronze_registry, silver_registry, logs_registry
+from src.models.base import bronze_registry, silver_registry
 import logging
 
-bronze_engine = create_async_engine(
-    settings.BRONZE_DATABASE_URL,
-    pool_pre_ping=True,
-    echo=False
-)
-
-silver_engine = create_async_engine(
-    settings.SILVER_DATABASE_URL,
-    pool_pre_ping=True,
-    echo=False
-)
-
-logs_engine = create_async_engine(
-    settings.LOGS_DATABASE_URL,
+# Mesma engine para ambos os schemas
+database_engine = create_async_engine(
+    settings.DATABASE_URL,
     pool_pre_ping=True,
     echo=False
 )
 
 BronzeSessionMaker = sessionmaker(
-    bind=bronze_engine,
+    bind=database_engine,
     class_=AsyncSession,
     expire_on_commit=False
 )
 
 SilverSessionMaker = sessionmaker(
-    bind=silver_engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
-
-LogsSessionMaker = sessionmaker(
-    bind=logs_engine,
+    bind=database_engine,
     class_=AsyncSession,
     expire_on_commit=False
 )
 
 async def create_databases():
     """
-    Cria os bancos Bronze e Silver se não existirem.
+    Cria os schemas Bronze e Silver se não existirem.
     """
-    # Cria tabelas no bronze
-    async with bronze_engine.begin() as conn:
+    # Criar schemas se não existirem
+    async with database_engine.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS bronze"))
         await conn.run_sync(bronze_registry.metadata.create_all)
 
-    # Cria tabelas no Silver
-    async with silver_engine.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS silver"))
         await conn.run_sync(silver_registry.metadata.create_all)
 
 # Context manager para pipelines (recomendado para seu caso)
 class DatabaseSession:
-    def __init__(self, session_type: str = "logs"):
+    def __init__(self, session_type: str = "bronze"):
         self.session = None
         self.session_type = session_type
 
@@ -67,9 +51,6 @@ class DatabaseSession:
             self.session = BronzeSessionMaker()
         elif self.session_type == "silver":
             self.session = SilverSessionMaker()
-        # logs
-        else:
-            self.session = LogsSessionMaker()
         return self.session
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -92,7 +73,3 @@ class BronzeSession(DatabaseSession):
 class SilverSession(DatabaseSession):
     def __init__(self):
         super().__init__("silver")
-
-class LogsSession(DatabaseSession):
-    def __init__(self):
-        super().__init__("logs")

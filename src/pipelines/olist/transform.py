@@ -33,10 +33,10 @@ class OlistTransformer:
                 SUM(oi.freight_value) AS total_freight,
                 COUNT(oi.product_id) AS total_items
             FROM
-                olist_orders o
-                JOIN bronze_olist_order_items oi ON o.order_id = oi.order_id
-                JOIN bronze_olist_order_payments op ON oi.order_id = op.order_id
-                JOIN bronze_olist_customers c ON o.customer_id = c.customer_id
+                bronze.orders o
+                JOIN bronze.order_items oi ON o.order_id = oi.order_id
+                JOIN bronze.order_payments op ON oi.order_id = op.order_id
+                JOIN bronze.customers c ON o.customer_id = c.customer_id
 
             GROUP BY
                 o.order_status,

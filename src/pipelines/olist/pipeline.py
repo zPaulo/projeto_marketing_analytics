@@ -1,5 +1,5 @@
 import time
-from src.core.database import BronzeSession, SilverSession, LogsSession
+from src.core.database import BronzeSession, SilverSession
 from .extract import OlistExtractor
 from .load import OlistLoader
 from .transform import OlistTransformer
@@ -28,7 +28,7 @@ class OlistPipeline:
             start_time = time.time()
             async with BronzeSession() as session:
                 for table_name, df in raw_data.items():
-                    await self.loader.load_raw_olist(session, df, f"bronze_olist_{table_name}")
+                    await self.loader.load_raw_olist(session, df, table_name)
             load_duration = time.time() - start_time
             await logger.log_step("load", load_duration, records_count)
 

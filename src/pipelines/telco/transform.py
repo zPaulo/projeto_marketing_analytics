@@ -23,7 +23,7 @@ class TelcoTransformer:
             END as churned,
             CAST(REPLACE(TotalCharges, ' ', '0') as FLOAT) as total_charges,
             CAST(MonthlyCharges as FLOAT) as monthly_charges
-        FROM bronze_telco_customer_churn
+        FROM bronze.customer_churn
         WHERE customerID IS NOT NULL
         """)
     

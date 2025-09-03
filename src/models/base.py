@@ -6,16 +6,15 @@ from typing import Optional
 # Registry separado para cada camada
 bronze_registry = registry()
 silver_registry = registry()
-logs_registry = registry()
+
+bronze_registry.metadata.schema = "bronze"
+silver_registry.metadata.schema = "silver"
 
 class BronzeBase(DeclarativeBase):
     registry = bronze_registry
 
 class SilverBase(DeclarativeBase):
     registry = silver_registry
-
-class LogsBase(DeclarativeBase):
-    registry = logs_registry
 
 # Enums para logs
 class ExecutionPipelineStatus(str, Enum):
@@ -24,8 +23,8 @@ class ExecutionPipelineStatus(str, Enum):
     COMPLETED = "completed"
     FAILED = "failed"
 
-# modelos de logs
-@logs_registry.mapped_as_dataclass
+# modelos de logs - movido para bronze
+@bronze_registry.mapped_as_dataclass
 class LogsPipelinesExecutions:
     __tablename__ = "logs_pipelines_executions"
     id: int = mapped_column(init=False, primary_key=True)
