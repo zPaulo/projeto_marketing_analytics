@@ -8,6 +8,8 @@ sys.path.append(project_root)
 from src.pipelines.telco.pipeline import TelcoPipeline
 from src.pipelines.olist.pipeline import OlistPipeline
 
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def main():
 
