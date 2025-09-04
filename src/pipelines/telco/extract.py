@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict
 
 class TelcoExtractor:
-    def __init__(self, data_path: str = "src/data/Telco_customer_churn"):
+    def __init__(self, data_path: str = "data/Telco_customer_churn"):
         self.data_path = Path(data_path)
 
     async def extract_customer_churn(self) -> pl.DataFrame:

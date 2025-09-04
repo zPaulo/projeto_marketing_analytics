@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict
 
 class OlistExtractor:
-    def __init__(self, data_path: str = "src/data/Olist_customers"):
+    def __init__(self, data_path: str = "data/Olist_customers"):
         self.data_path = Path(data_path)
 
     async def extract_customers(self) -> pl.DataFrame:
