@@ -9,9 +9,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     # Variáveis do Docker Compose
-    postgres_user: str
-    postgres_password: str
-    postgres_db: str
-    postgres_host: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+    POSTGRES_HOST: str
 
 settings = Settings()
